@@ -8,7 +8,7 @@
 
 ---
 
-> [POST] Signup `http://localhost:3001/api/v1/signup`
+[POST] Signup `http://localhost:3001/api/v1/signup`
 
 ```json
 {
@@ -20,7 +20,7 @@
 }
 ```
 
-> [POST] SignIn `http://localhost:3001/api/v1/signin`
+[POST] SignIn `http://localhost:3001/api/v1/signin`
 
 ```json
 {
@@ -29,11 +29,11 @@
 }
 ```
 
-> [GET] Refresh `http://localhost:3001/api/v1/refresh`
+[GET] Refresh `http://localhost:3001/api/v1/refresh`
 
 Header: token:refreshtoken
 
-> [PUT] Update User to ServiceProvider `http://localhost:3001/api/v1/user`
+[PUT] Update User to ServiceProvider `http://localhost:3001/api/v1/user`
 
 Authentication Required _Bearer Token:_ `access token`
 
@@ -41,7 +41,7 @@ Authentication Required _Bearer Token:_ `access token`
 
 ---
 
-> [POST] CREATE location `http://localhost:3001/api/v1/location/create`
+[POST] CREATE location `http://localhost:3001/api/v1/location/create`
 
 Authentication Required _Bearer Token:_ `access token`
 
@@ -51,7 +51,7 @@ Authentication Required _Bearer Token:_ `access token`
 }
 ```
 
-> [POST] CREATE category `http://localhost:3001/api/v1/category/create`
+[POST] CREATE category `http://localhost:3001/api/v1/category/create`
 
 Authentication Required _Bearer Token:_ `access token`
 
@@ -65,7 +65,7 @@ Authentication Required _Bearer Token:_ `access token`
 
 ---
 
-> [POST] New Service `http://localhost:3001/api/v1/service/create`
+[POST] New Service `http://localhost:3001/api/v1/service/create`
 
 Authentication Required _Bearer Token:_ `access token`
 
@@ -82,9 +82,9 @@ Authentication Required _Bearer Token:_ `access token`
 
 instruments and additionalcost are optional
 
-> [GET] ALL available services `http://localhost:3001/api/v1/services`
+[GET] ALL available services `http://localhost:3001/api/v1/services`
 
-> [GET] MyServices `http://localhost:3001/api/v1/myservices`
+[GET] MyServices `http://localhost:3001/api/v1/myservices`
 
 Authentication Required _Bearer Token_ `access token`
 
@@ -92,7 +92,7 @@ Authentication Required _Bearer Token_ `access token`
 
 ---
 
-> [POST] Place Order `http://localhost:3001/api/v1/order/create`
+[POST] Place Order `http://localhost:3001/api/v1/order/create`
 
 Authentication Required _Bearer Token:_: `access token`
 
@@ -103,14 +103,14 @@ Authentication Required _Bearer Token:_: `access token`
 }
 ```
 
-> [GET] OrderHistory `http://localhost:3001/api/v1/orderhistory`
+[GET] OrderHistory `http://localhost:3001/api/v1/orderhistory`
 
 Authentication Required _Bearer Token:_: `access token`
 
-> [PUT] OrderRequets `http://localhost:3001/api/v1/myorders`
+[PUT] OrderRequets `http://localhost:3001/api/v1/myorders`
 
 Authentication Required _Bearer Token:_ `access token`
 
-> [PUT] Decline Request `http://localhost:3001/api/v1/order/:orderID/decline`
+[PUT] Decline Request `http://localhost:3001/api/v1/order/:orderID/decline`
 
 Authentication Required _Bearer Token:_: `access token`
