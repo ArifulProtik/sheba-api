@@ -27,6 +27,7 @@ func InitRouter(r *echo.Group, s *services.Service, auth *auth.Token, key string
 
 	r.POST("/order/create", handler.Order.CreateOrder)
 	r.GET("/myorders", handler.Order.ServiceRequests)
+	r.GET("/orderhistory", handler.Order.OrderHistory)
 	r.PUT("/order/:id/accept", handler.Order.AcceptOrder)
 	r.PUT("/order/:id/decline", handler.Order.DeclineOrder)
 	//user

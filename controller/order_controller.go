@@ -131,3 +131,14 @@ func (o *OrderController) DeclineOrder(c echo.Context) error {
 	return c.JSON(http.StatusAccepted, echo.Map{"msg": "declined"})
 
 }
+
+func (o *OrderController) OrderHistory(c echo.Context) error {
+	usr := c.Get("user").(*ent.User)
+	orders, err := o.Service.OrderOfUser(usr.ID)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, utils.ErrorResponse{
+			Msg: "Internal Error",
+		})
+	}
+	return c.JSON(http.StatusOK, orders)
+}
