@@ -8,6 +8,7 @@ import (
 	"github.com/ArifulProtik/sheba-api/ent/auth"
 	"github.com/ArifulProtik/sheba-api/ent/category"
 	"github.com/ArifulProtik/sheba-api/ent/location"
+	"github.com/ArifulProtik/sheba-api/ent/order"
 	"github.com/ArifulProtik/sheba-api/ent/schema"
 	"github.com/ArifulProtik/sheba-api/ent/service"
 	"github.com/ArifulProtik/sheba-api/ent/user"
@@ -48,6 +49,24 @@ func init() {
 	locationDescCreatedAt := locationFields[1].Descriptor()
 	// location.DefaultCreatedAt holds the default value on creation for the created_at field.
 	location.DefaultCreatedAt = locationDescCreatedAt.Default.(func() time.Time)
+	orderFields := schema.Order{}.Fields()
+	_ = orderFields
+	// orderDescIsDeclined is the schema descriptor for is_declined field.
+	orderDescIsDeclined := orderFields[5].Descriptor()
+	// order.DefaultIsDeclined holds the default value on creation for the is_declined field.
+	order.DefaultIsDeclined = orderDescIsDeclined.Default.(bool)
+	// orderDescPaymentOk is the schema descriptor for payment_ok field.
+	orderDescPaymentOk := orderFields[6].Descriptor()
+	// order.DefaultPaymentOk holds the default value on creation for the payment_ok field.
+	order.DefaultPaymentOk = orderDescPaymentOk.Default.(bool)
+	// orderDescIsAccepted is the schema descriptor for is_accepted field.
+	orderDescIsAccepted := orderFields[7].Descriptor()
+	// order.DefaultIsAccepted holds the default value on creation for the is_accepted field.
+	order.DefaultIsAccepted = orderDescIsAccepted.Default.(bool)
+	// orderDescID is the schema descriptor for id field.
+	orderDescID := orderFields[0].Descriptor()
+	// order.DefaultID holds the default value on creation for the id field.
+	order.DefaultID = orderDescID.Default.(func() uuid.UUID)
 	serviceFields := schema.Service{}.Fields()
 	_ = serviceFields
 	// serviceDescTitle is the schema descriptor for title field.

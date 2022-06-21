@@ -10,6 +10,7 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/ArifulProtik/sheba-api/ent/order"
 	"github.com/ArifulProtik/sheba-api/ent/service"
 	"github.com/ArifulProtik/sheba-api/ent/user"
 	"github.com/google/uuid"
@@ -129,6 +130,21 @@ func (uc *UserCreate) AddService(s ...*Service) *UserCreate {
 		ids[i] = s[i].ID
 	}
 	return uc.AddServiceIDs(ids...)
+}
+
+// AddOrderIDs adds the "order" edge to the Order entity by IDs.
+func (uc *UserCreate) AddOrderIDs(ids ...uuid.UUID) *UserCreate {
+	uc.mutation.AddOrderIDs(ids...)
+	return uc
+}
+
+// AddOrder adds the "order" edges to the Order entity.
+func (uc *UserCreate) AddOrder(o ...*Order) *UserCreate {
+	ids := make([]uuid.UUID, len(o))
+	for i := range o {
+		ids[i] = o[i].ID
+	}
+	return uc.AddOrderIDs(ids...)
 }
 
 // Mutation returns the UserMutation object of the builder.
@@ -374,6 +390,25 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeUUID,
 					Column: service.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := uc.mutation.OrderIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.OrderTable,
+			Columns: []string{user.OrderColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUUID,
+					Column: order.FieldID,
 				},
 			},
 		}

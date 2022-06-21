@@ -851,6 +851,34 @@ func HasServiceWith(preds ...predicate.Service) predicate.User {
 	})
 }
 
+// HasOrder applies the HasEdge predicate on the "order" edge.
+func HasOrder() predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(OrderTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, OrderTable, OrderColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasOrderWith applies the HasEdge predicate on the "order" edge with a given conditions (other predicates).
+func HasOrderWith(preds ...predicate.Order) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(OrderInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, OrderTable, OrderColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
 // And groups predicates with the AND operator between them.
 func And(predicates ...predicate.User) predicate.User {
 	return predicate.User(func(s *sql.Selector) {

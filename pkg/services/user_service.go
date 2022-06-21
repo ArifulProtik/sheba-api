@@ -24,7 +24,14 @@ func (a *UserService) SaveUser(usr utils.UserInput) (*ent.User, error) {
 	return newusr, nil
 
 }
-
+func (a *UserService) UpdateUser(id uuid.UUID) error {
+	err := a.Client.UpdateOneID(id).SetIsProvider(true).
+		Exec(context.Background())
+	if err != nil {
+		return err
+	}
+	return nil
+}
 func (a *UserService) FindUserByEmail(email string) (*ent.User, error) {
 	usr, err := a.Client.Query().Where(user.EmailEQ(email)).First(context.Background())
 	if err != nil {

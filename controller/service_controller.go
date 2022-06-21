@@ -18,6 +18,11 @@ type ServiceController struct {
 func (s *ServiceController) CreateService(c echo.Context) error {
 	if c.Request().Body != nil {
 		user := c.Get("user").(*ent.User)
+		if user.IsProvider != true {
+			return c.JSON(http.StatusUnauthorized, utils.ErrorResponse{
+				Msg: "OOPs you are not a service provider",
+			})
+		}
 		var inpt utils.ServiceInput
 
 		if err := c.Bind(&inpt); err != nil {

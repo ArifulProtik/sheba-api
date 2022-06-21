@@ -3,18 +3,62 @@
 package ent
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 
 	"entgo.io/ent/dialect/sql"
 	"github.com/ArifulProtik/sheba-api/ent/order"
+	"github.com/ArifulProtik/sheba-api/ent/user"
+	"github.com/google/uuid"
 )
 
 // Order is the model entity for the Order schema.
 type Order struct {
-	config
+	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
+	ID uuid.UUID `json:"id,omitempty"`
+	// Serviceid holds the value of the "serviceid" field.
+	Serviceid uuid.UUID `json:"serviceid,omitempty"`
+	// Providerid holds the value of the "providerid" field.
+	Providerid uuid.UUID `json:"providerid,omitempty"`
+	// Totalcost holds the value of the "totalcost" field.
+	Totalcost float64 `json:"totalcost,omitempty"`
+	// Address holds the value of the "address" field.
+	Address []string `json:"address,omitempty"`
+	// IsDeclined holds the value of the "is_declined" field.
+	IsDeclined bool `json:"is_declined,omitempty"`
+	// PaymentOk holds the value of the "payment_ok" field.
+	PaymentOk bool `json:"payment_ok,omitempty"`
+	// IsAccepted holds the value of the "is_accepted" field.
+	IsAccepted bool `json:"is_accepted,omitempty"`
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the OrderQuery when eager-loading is set.
+	Edges      OrderEdges `json:"edges"`
+	user_order *uuid.UUID
+}
+
+// OrderEdges holds the relations/edges for other nodes in the graph.
+type OrderEdges struct {
+	// User holds the value of the user edge.
+	User *User `json:"user,omitempty"`
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [1]bool
+}
+
+// UserOrErr returns the User value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e OrderEdges) UserOrErr() (*User, error) {
+	if e.loadedTypes[0] {
+		if e.User == nil {
+			// The edge user was loaded in eager-loading,
+			// but was not found.
+			return nil, &NotFoundError{label: user.Label}
+		}
+		return e.User, nil
+	}
+	return nil, &NotLoadedError{edge: "user"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -22,8 +66,16 @@ func (*Order) scanValues(columns []string) ([]interface{}, error) {
 	values := make([]interface{}, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case order.FieldID:
-			values[i] = new(sql.NullInt64)
+		case order.FieldAddress:
+			values[i] = new([]byte)
+		case order.FieldIsDeclined, order.FieldPaymentOk, order.FieldIsAccepted:
+			values[i] = new(sql.NullBool)
+		case order.FieldTotalcost:
+			values[i] = new(sql.NullFloat64)
+		case order.FieldID, order.FieldServiceid, order.FieldProviderid:
+			values[i] = new(uuid.UUID)
+		case order.ForeignKeys[0]: // user_order
+			values[i] = &sql.NullScanner{S: new(uuid.UUID)}
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type Order", columns[i])
 		}
@@ -40,14 +92,70 @@ func (o *Order) assignValues(columns []string, values []interface{}) error {
 	for i := range columns {
 		switch columns[i] {
 		case order.FieldID:
-			value, ok := values[i].(*sql.NullInt64)
-			if !ok {
-				return fmt.Errorf("unexpected type %T for field id", value)
+			if value, ok := values[i].(*uuid.UUID); !ok {
+				return fmt.Errorf("unexpected type %T for field id", values[i])
+			} else if value != nil {
+				o.ID = *value
 			}
-			o.ID = int(value.Int64)
+		case order.FieldServiceid:
+			if value, ok := values[i].(*uuid.UUID); !ok {
+				return fmt.Errorf("unexpected type %T for field serviceid", values[i])
+			} else if value != nil {
+				o.Serviceid = *value
+			}
+		case order.FieldProviderid:
+			if value, ok := values[i].(*uuid.UUID); !ok {
+				return fmt.Errorf("unexpected type %T for field providerid", values[i])
+			} else if value != nil {
+				o.Providerid = *value
+			}
+		case order.FieldTotalcost:
+			if value, ok := values[i].(*sql.NullFloat64); !ok {
+				return fmt.Errorf("unexpected type %T for field totalcost", values[i])
+			} else if value.Valid {
+				o.Totalcost = value.Float64
+			}
+		case order.FieldAddress:
+			if value, ok := values[i].(*[]byte); !ok {
+				return fmt.Errorf("unexpected type %T for field address", values[i])
+			} else if value != nil && len(*value) > 0 {
+				if err := json.Unmarshal(*value, &o.Address); err != nil {
+					return fmt.Errorf("unmarshal field address: %w", err)
+				}
+			}
+		case order.FieldIsDeclined:
+			if value, ok := values[i].(*sql.NullBool); !ok {
+				return fmt.Errorf("unexpected type %T for field is_declined", values[i])
+			} else if value.Valid {
+				o.IsDeclined = value.Bool
+			}
+		case order.FieldPaymentOk:
+			if value, ok := values[i].(*sql.NullBool); !ok {
+				return fmt.Errorf("unexpected type %T for field payment_ok", values[i])
+			} else if value.Valid {
+				o.PaymentOk = value.Bool
+			}
+		case order.FieldIsAccepted:
+			if value, ok := values[i].(*sql.NullBool); !ok {
+				return fmt.Errorf("unexpected type %T for field is_accepted", values[i])
+			} else if value.Valid {
+				o.IsAccepted = value.Bool
+			}
+		case order.ForeignKeys[0]:
+			if value, ok := values[i].(*sql.NullScanner); !ok {
+				return fmt.Errorf("unexpected type %T for field user_order", values[i])
+			} else if value.Valid {
+				o.user_order = new(uuid.UUID)
+				*o.user_order = *value.S.(*uuid.UUID)
+			}
 		}
 	}
 	return nil
+}
+
+// QueryUser queries the "user" edge of the Order entity.
+func (o *Order) QueryUser() *UserQuery {
+	return (&OrderClient{config: o.config}).QueryUser(o)
 }
 
 // Update returns a builder for updating this Order.
@@ -73,6 +181,20 @@ func (o *Order) String() string {
 	var builder strings.Builder
 	builder.WriteString("Order(")
 	builder.WriteString(fmt.Sprintf("id=%v", o.ID))
+	builder.WriteString(", serviceid=")
+	builder.WriteString(fmt.Sprintf("%v", o.Serviceid))
+	builder.WriteString(", providerid=")
+	builder.WriteString(fmt.Sprintf("%v", o.Providerid))
+	builder.WriteString(", totalcost=")
+	builder.WriteString(fmt.Sprintf("%v", o.Totalcost))
+	builder.WriteString(", address=")
+	builder.WriteString(fmt.Sprintf("%v", o.Address))
+	builder.WriteString(", is_declined=")
+	builder.WriteString(fmt.Sprintf("%v", o.IsDeclined))
+	builder.WriteString(", payment_ok=")
+	builder.WriteString(fmt.Sprintf("%v", o.PaymentOk))
+	builder.WriteString(", is_accepted=")
+	builder.WriteString(fmt.Sprintf("%v", o.IsAccepted))
 	builder.WriteByte(')')
 	return builder.String()
 }

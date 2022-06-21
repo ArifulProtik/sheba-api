@@ -42,9 +42,11 @@ type User struct {
 type UserEdges struct {
 	// Service holds the value of the service edge.
 	Service []*Service `json:"service,omitempty"`
+	// Order holds the value of the order edge.
+	Order []*Order `json:"order,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [1]bool
+	loadedTypes [2]bool
 }
 
 // ServiceOrErr returns the Service value or an error if the edge
@@ -54,6 +56,15 @@ func (e UserEdges) ServiceOrErr() ([]*Service, error) {
 		return e.Service, nil
 	}
 	return nil, &NotLoadedError{edge: "service"}
+}
+
+// OrderOrErr returns the Order value or an error if the edge
+// was not loaded in eager-loading.
+func (e UserEdges) OrderOrErr() ([]*Order, error) {
+	if e.loadedTypes[1] {
+		return e.Order, nil
+	}
+	return nil, &NotLoadedError{edge: "order"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -146,6 +157,11 @@ func (u *User) assignValues(columns []string, values []interface{}) error {
 // QueryService queries the "service" edge of the User entity.
 func (u *User) QueryService() *ServiceQuery {
 	return (&UserClient{config: u.config}).QueryService(u)
+}
+
+// QueryOrder queries the "order" edge of the User entity.
+func (u *User) QueryOrder() *OrderQuery {
+	return (&UserClient{config: u.config}).QueryOrder(u)
 }
 
 // Update returns a builder for updating this User.

@@ -31,6 +31,8 @@ const (
 	FieldCreatedAt = "created_at"
 	// EdgeService holds the string denoting the service edge name in mutations.
 	EdgeService = "service"
+	// EdgeOrder holds the string denoting the order edge name in mutations.
+	EdgeOrder = "order"
 	// Table holds the table name of the user in the database.
 	Table = "users"
 	// ServiceTable is the table that holds the service relation/edge.
@@ -40,6 +42,13 @@ const (
 	ServiceInverseTable = "services"
 	// ServiceColumn is the table column denoting the service relation/edge.
 	ServiceColumn = "user_service"
+	// OrderTable is the table that holds the order relation/edge.
+	OrderTable = "orders"
+	// OrderInverseTable is the table name for the Order entity.
+	// It exists in this package in order to avoid circular dependency with the "order" package.
+	OrderInverseTable = "orders"
+	// OrderColumn is the table column denoting the order relation/edge.
+	OrderColumn = "user_order"
 )
 
 // Columns holds all SQL columns for user fields.

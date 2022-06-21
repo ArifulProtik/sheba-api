@@ -47,13 +47,29 @@ var (
 	}
 	// OrdersColumns holds the columns for the "orders" table.
 	OrdersColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "id", Type: field.TypeUUID},
+		{Name: "serviceid", Type: field.TypeUUID},
+		{Name: "providerid", Type: field.TypeUUID},
+		{Name: "totalcost", Type: field.TypeFloat64},
+		{Name: "address", Type: field.TypeJSON},
+		{Name: "is_declined", Type: field.TypeBool, Default: false},
+		{Name: "payment_ok", Type: field.TypeBool, Default: false},
+		{Name: "is_accepted", Type: field.TypeBool, Default: false},
+		{Name: "user_order", Type: field.TypeUUID},
 	}
 	// OrdersTable holds the schema information for the "orders" table.
 	OrdersTable = &schema.Table{
 		Name:       "orders",
 		Columns:    OrdersColumns,
 		PrimaryKey: []*schema.Column{OrdersColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "orders_users_order",
+				Columns:    []*schema.Column{OrdersColumns[8]},
+				RefColumns: []*schema.Column{UsersColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
 	}
 	// ServicesColumns holds the columns for the "services" table.
 	ServicesColumns = []*schema.Column{
@@ -111,5 +127,6 @@ var (
 )
 
 func init() {
+	OrdersTable.ForeignKeys[0].RefTable = UsersTable
 	ServicesTable.ForeignKeys[0].RefTable = UsersTable
 }

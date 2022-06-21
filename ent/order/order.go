@@ -2,18 +2,58 @@
 
 package order
 
+import (
+	"github.com/google/uuid"
+)
+
 const (
 	// Label holds the string label denoting the order type in the database.
 	Label = "order"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
+	// FieldServiceid holds the string denoting the serviceid field in the database.
+	FieldServiceid = "serviceid"
+	// FieldProviderid holds the string denoting the providerid field in the database.
+	FieldProviderid = "providerid"
+	// FieldTotalcost holds the string denoting the totalcost field in the database.
+	FieldTotalcost = "totalcost"
+	// FieldAddress holds the string denoting the address field in the database.
+	FieldAddress = "address"
+	// FieldIsDeclined holds the string denoting the is_declined field in the database.
+	FieldIsDeclined = "is_declined"
+	// FieldPaymentOk holds the string denoting the payment_ok field in the database.
+	FieldPaymentOk = "payment_ok"
+	// FieldIsAccepted holds the string denoting the is_accepted field in the database.
+	FieldIsAccepted = "is_accepted"
+	// EdgeUser holds the string denoting the user edge name in mutations.
+	EdgeUser = "user"
 	// Table holds the table name of the order in the database.
 	Table = "orders"
+	// UserTable is the table that holds the user relation/edge.
+	UserTable = "orders"
+	// UserInverseTable is the table name for the User entity.
+	// It exists in this package in order to avoid circular dependency with the "user" package.
+	UserInverseTable = "users"
+	// UserColumn is the table column denoting the user relation/edge.
+	UserColumn = "user_order"
 )
 
 // Columns holds all SQL columns for order fields.
 var Columns = []string{
 	FieldID,
+	FieldServiceid,
+	FieldProviderid,
+	FieldTotalcost,
+	FieldAddress,
+	FieldIsDeclined,
+	FieldPaymentOk,
+	FieldIsAccepted,
+}
+
+// ForeignKeys holds the SQL foreign-keys that are owned by the "orders"
+// table and are not defined as standalone fields in the schema.
+var ForeignKeys = []string{
+	"user_order",
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -23,5 +63,21 @@ func ValidColumn(column string) bool {
 			return true
 		}
 	}
+	for i := range ForeignKeys {
+		if column == ForeignKeys[i] {
+			return true
+		}
+	}
 	return false
 }
+
+var (
+	// DefaultIsDeclined holds the default value on creation for the "is_declined" field.
+	DefaultIsDeclined bool
+	// DefaultPaymentOk holds the default value on creation for the "payment_ok" field.
+	DefaultPaymentOk bool
+	// DefaultIsAccepted holds the default value on creation for the "is_accepted" field.
+	DefaultIsAccepted bool
+	// DefaultID holds the default value on creation for the "id" field.
+	DefaultID func() uuid.UUID
+)

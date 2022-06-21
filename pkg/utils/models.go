@@ -35,3 +35,14 @@ type ServiceInput struct {
 	Cost           string   `json:"cost" validate:"required"`
 	AdditionalCost string   `json:"additionalcost"`
 }
+
+type OrderInput struct {
+	ServiceID string   `json:"serviceid" validate:"required"`
+	Adsress   []string `json:"address" validate:"required"`
+}
+type OrderDetails struct {
+	ServiceID  uuid.UUID
+	ProviderID uuid.UUID
+	TotalCost  float64
+	Adress     []string
+}

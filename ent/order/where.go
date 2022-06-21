@@ -4,32 +4,34 @@ package order
 
 import (
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/ArifulProtik/sheba-api/ent/predicate"
+	"github.com/google/uuid"
 )
 
 // ID filters vertices based on their ID field.
-func ID(id int) predicate.Order {
+func ID(id uuid.UUID) predicate.Order {
 	return predicate.Order(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldID), id))
 	})
 }
 
 // IDEQ applies the EQ predicate on the ID field.
-func IDEQ(id int) predicate.Order {
+func IDEQ(id uuid.UUID) predicate.Order {
 	return predicate.Order(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldID), id))
 	})
 }
 
 // IDNEQ applies the NEQ predicate on the ID field.
-func IDNEQ(id int) predicate.Order {
+func IDNEQ(id uuid.UUID) predicate.Order {
 	return predicate.Order(func(s *sql.Selector) {
 		s.Where(sql.NEQ(s.C(FieldID), id))
 	})
 }
 
 // IDIn applies the In predicate on the ID field.
-func IDIn(ids ...int) predicate.Order {
+func IDIn(ids ...uuid.UUID) predicate.Order {
 	return predicate.Order(func(s *sql.Selector) {
 		// if not arguments were provided, append the FALSE constants,
 		// since we can't apply "IN ()". This will make this predicate falsy.
@@ -46,7 +48,7 @@ func IDIn(ids ...int) predicate.Order {
 }
 
 // IDNotIn applies the NotIn predicate on the ID field.
-func IDNotIn(ids ...int) predicate.Order {
+func IDNotIn(ids ...uuid.UUID) predicate.Order {
 	return predicate.Order(func(s *sql.Selector) {
 		// if not arguments were provided, append the FALSE constants,
 		// since we can't apply "IN ()". This will make this predicate falsy.
@@ -63,30 +65,370 @@ func IDNotIn(ids ...int) predicate.Order {
 }
 
 // IDGT applies the GT predicate on the ID field.
-func IDGT(id int) predicate.Order {
+func IDGT(id uuid.UUID) predicate.Order {
 	return predicate.Order(func(s *sql.Selector) {
 		s.Where(sql.GT(s.C(FieldID), id))
 	})
 }
 
 // IDGTE applies the GTE predicate on the ID field.
-func IDGTE(id int) predicate.Order {
+func IDGTE(id uuid.UUID) predicate.Order {
 	return predicate.Order(func(s *sql.Selector) {
 		s.Where(sql.GTE(s.C(FieldID), id))
 	})
 }
 
 // IDLT applies the LT predicate on the ID field.
-func IDLT(id int) predicate.Order {
+func IDLT(id uuid.UUID) predicate.Order {
 	return predicate.Order(func(s *sql.Selector) {
 		s.Where(sql.LT(s.C(FieldID), id))
 	})
 }
 
 // IDLTE applies the LTE predicate on the ID field.
-func IDLTE(id int) predicate.Order {
+func IDLTE(id uuid.UUID) predicate.Order {
 	return predicate.Order(func(s *sql.Selector) {
 		s.Where(sql.LTE(s.C(FieldID), id))
+	})
+}
+
+// Serviceid applies equality check predicate on the "serviceid" field. It's identical to ServiceidEQ.
+func Serviceid(v uuid.UUID) predicate.Order {
+	return predicate.Order(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldServiceid), v))
+	})
+}
+
+// Providerid applies equality check predicate on the "providerid" field. It's identical to ProvideridEQ.
+func Providerid(v uuid.UUID) predicate.Order {
+	return predicate.Order(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldProviderid), v))
+	})
+}
+
+// Totalcost applies equality check predicate on the "totalcost" field. It's identical to TotalcostEQ.
+func Totalcost(v float64) predicate.Order {
+	return predicate.Order(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldTotalcost), v))
+	})
+}
+
+// IsDeclined applies equality check predicate on the "is_declined" field. It's identical to IsDeclinedEQ.
+func IsDeclined(v bool) predicate.Order {
+	return predicate.Order(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldIsDeclined), v))
+	})
+}
+
+// PaymentOk applies equality check predicate on the "payment_ok" field. It's identical to PaymentOkEQ.
+func PaymentOk(v bool) predicate.Order {
+	return predicate.Order(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldPaymentOk), v))
+	})
+}
+
+// IsAccepted applies equality check predicate on the "is_accepted" field. It's identical to IsAcceptedEQ.
+func IsAccepted(v bool) predicate.Order {
+	return predicate.Order(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldIsAccepted), v))
+	})
+}
+
+// ServiceidEQ applies the EQ predicate on the "serviceid" field.
+func ServiceidEQ(v uuid.UUID) predicate.Order {
+	return predicate.Order(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldServiceid), v))
+	})
+}
+
+// ServiceidNEQ applies the NEQ predicate on the "serviceid" field.
+func ServiceidNEQ(v uuid.UUID) predicate.Order {
+	return predicate.Order(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldServiceid), v))
+	})
+}
+
+// ServiceidIn applies the In predicate on the "serviceid" field.
+func ServiceidIn(vs ...uuid.UUID) predicate.Order {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Order(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldServiceid), v...))
+	})
+}
+
+// ServiceidNotIn applies the NotIn predicate on the "serviceid" field.
+func ServiceidNotIn(vs ...uuid.UUID) predicate.Order {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Order(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldServiceid), v...))
+	})
+}
+
+// ServiceidGT applies the GT predicate on the "serviceid" field.
+func ServiceidGT(v uuid.UUID) predicate.Order {
+	return predicate.Order(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldServiceid), v))
+	})
+}
+
+// ServiceidGTE applies the GTE predicate on the "serviceid" field.
+func ServiceidGTE(v uuid.UUID) predicate.Order {
+	return predicate.Order(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldServiceid), v))
+	})
+}
+
+// ServiceidLT applies the LT predicate on the "serviceid" field.
+func ServiceidLT(v uuid.UUID) predicate.Order {
+	return predicate.Order(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldServiceid), v))
+	})
+}
+
+// ServiceidLTE applies the LTE predicate on the "serviceid" field.
+func ServiceidLTE(v uuid.UUID) predicate.Order {
+	return predicate.Order(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldServiceid), v))
+	})
+}
+
+// ProvideridEQ applies the EQ predicate on the "providerid" field.
+func ProvideridEQ(v uuid.UUID) predicate.Order {
+	return predicate.Order(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldProviderid), v))
+	})
+}
+
+// ProvideridNEQ applies the NEQ predicate on the "providerid" field.
+func ProvideridNEQ(v uuid.UUID) predicate.Order {
+	return predicate.Order(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldProviderid), v))
+	})
+}
+
+// ProvideridIn applies the In predicate on the "providerid" field.
+func ProvideridIn(vs ...uuid.UUID) predicate.Order {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Order(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldProviderid), v...))
+	})
+}
+
+// ProvideridNotIn applies the NotIn predicate on the "providerid" field.
+func ProvideridNotIn(vs ...uuid.UUID) predicate.Order {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Order(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldProviderid), v...))
+	})
+}
+
+// ProvideridGT applies the GT predicate on the "providerid" field.
+func ProvideridGT(v uuid.UUID) predicate.Order {
+	return predicate.Order(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldProviderid), v))
+	})
+}
+
+// ProvideridGTE applies the GTE predicate on the "providerid" field.
+func ProvideridGTE(v uuid.UUID) predicate.Order {
+	return predicate.Order(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldProviderid), v))
+	})
+}
+
+// ProvideridLT applies the LT predicate on the "providerid" field.
+func ProvideridLT(v uuid.UUID) predicate.Order {
+	return predicate.Order(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldProviderid), v))
+	})
+}
+
+// ProvideridLTE applies the LTE predicate on the "providerid" field.
+func ProvideridLTE(v uuid.UUID) predicate.Order {
+	return predicate.Order(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldProviderid), v))
+	})
+}
+
+// TotalcostEQ applies the EQ predicate on the "totalcost" field.
+func TotalcostEQ(v float64) predicate.Order {
+	return predicate.Order(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldTotalcost), v))
+	})
+}
+
+// TotalcostNEQ applies the NEQ predicate on the "totalcost" field.
+func TotalcostNEQ(v float64) predicate.Order {
+	return predicate.Order(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldTotalcost), v))
+	})
+}
+
+// TotalcostIn applies the In predicate on the "totalcost" field.
+func TotalcostIn(vs ...float64) predicate.Order {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Order(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldTotalcost), v...))
+	})
+}
+
+// TotalcostNotIn applies the NotIn predicate on the "totalcost" field.
+func TotalcostNotIn(vs ...float64) predicate.Order {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Order(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldTotalcost), v...))
+	})
+}
+
+// TotalcostGT applies the GT predicate on the "totalcost" field.
+func TotalcostGT(v float64) predicate.Order {
+	return predicate.Order(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldTotalcost), v))
+	})
+}
+
+// TotalcostGTE applies the GTE predicate on the "totalcost" field.
+func TotalcostGTE(v float64) predicate.Order {
+	return predicate.Order(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldTotalcost), v))
+	})
+}
+
+// TotalcostLT applies the LT predicate on the "totalcost" field.
+func TotalcostLT(v float64) predicate.Order {
+	return predicate.Order(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldTotalcost), v))
+	})
+}
+
+// TotalcostLTE applies the LTE predicate on the "totalcost" field.
+func TotalcostLTE(v float64) predicate.Order {
+	return predicate.Order(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldTotalcost), v))
+	})
+}
+
+// IsDeclinedEQ applies the EQ predicate on the "is_declined" field.
+func IsDeclinedEQ(v bool) predicate.Order {
+	return predicate.Order(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldIsDeclined), v))
+	})
+}
+
+// IsDeclinedNEQ applies the NEQ predicate on the "is_declined" field.
+func IsDeclinedNEQ(v bool) predicate.Order {
+	return predicate.Order(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldIsDeclined), v))
+	})
+}
+
+// PaymentOkEQ applies the EQ predicate on the "payment_ok" field.
+func PaymentOkEQ(v bool) predicate.Order {
+	return predicate.Order(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldPaymentOk), v))
+	})
+}
+
+// PaymentOkNEQ applies the NEQ predicate on the "payment_ok" field.
+func PaymentOkNEQ(v bool) predicate.Order {
+	return predicate.Order(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldPaymentOk), v))
+	})
+}
+
+// IsAcceptedEQ applies the EQ predicate on the "is_accepted" field.
+func IsAcceptedEQ(v bool) predicate.Order {
+	return predicate.Order(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldIsAccepted), v))
+	})
+}
+
+// IsAcceptedNEQ applies the NEQ predicate on the "is_accepted" field.
+func IsAcceptedNEQ(v bool) predicate.Order {
+	return predicate.Order(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldIsAccepted), v))
+	})
+}
+
+// HasUser applies the HasEdge predicate on the "user" edge.
+func HasUser() predicate.Order {
+	return predicate.Order(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(UserTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, UserTable, UserColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasUserWith applies the HasEdge predicate on the "user" edge with a given conditions (other predicates).
+func HasUserWith(preds ...predicate.User) predicate.Order {
+	return predicate.Order(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(UserInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, UserTable, UserColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
 	})
 }
 

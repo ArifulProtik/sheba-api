@@ -469,7 +469,7 @@ func (c *OrderClient) UpdateOne(o *Order) *OrderUpdateOne {
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *OrderClient) UpdateOneID(id int) *OrderUpdateOne {
+func (c *OrderClient) UpdateOneID(id uuid.UUID) *OrderUpdateOne {
 	mutation := newOrderMutation(c.config, OpUpdateOne, withOrderID(id))
 	return &OrderUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
@@ -486,7 +486,7 @@ func (c *OrderClient) DeleteOne(o *Order) *OrderDeleteOne {
 }
 
 // DeleteOneID returns a delete builder for the given id.
-func (c *OrderClient) DeleteOneID(id int) *OrderDeleteOne {
+func (c *OrderClient) DeleteOneID(id uuid.UUID) *OrderDeleteOne {
 	builder := c.Delete().Where(order.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
@@ -501,17 +501,33 @@ func (c *OrderClient) Query() *OrderQuery {
 }
 
 // Get returns a Order entity by its id.
-func (c *OrderClient) Get(ctx context.Context, id int) (*Order, error) {
+func (c *OrderClient) Get(ctx context.Context, id uuid.UUID) (*Order, error) {
 	return c.Query().Where(order.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *OrderClient) GetX(ctx context.Context, id int) *Order {
+func (c *OrderClient) GetX(ctx context.Context, id uuid.UUID) *Order {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)
 	}
 	return obj
+}
+
+// QueryUser queries the user edge of a Order.
+func (c *OrderClient) QueryUser(o *Order) *UserQuery {
+	query := &UserQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := o.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(order.Table, order.FieldID, id),
+			sqlgraph.To(user.Table, user.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, order.UserTable, order.UserColumn),
+		)
+		fromV = sqlgraph.Neighbors(o.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
 }
 
 // Hooks returns the client hooks.
@@ -719,6 +735,22 @@ func (c *UserClient) QueryService(u *User) *ServiceQuery {
 			sqlgraph.From(user.Table, user.FieldID, id),
 			sqlgraph.To(service.Table, service.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, user.ServiceTable, user.ServiceColumn),
+		)
+		fromV = sqlgraph.Neighbors(u.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryOrder queries the order edge of a User.
+func (c *UserClient) QueryOrder(u *User) *OrderQuery {
+	query := &OrderQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := u.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(user.Table, user.FieldID, id),
+			sqlgraph.To(order.Table, order.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.OrderTable, user.OrderColumn),
 		)
 		fromV = sqlgraph.Neighbors(u.driver.Dialect(), step)
 		return fromV, nil

@@ -137,3 +137,15 @@ func (a *AuthController) Logout(e echo.Context) error {
 	})
 
 }
+
+func (a *AuthController) UpdateToProvider(c echo.Context) error {
+	usr := c.Get("user").(*ent.User)
+
+	err := a.UserService.UpdateUser(usr.ID)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, utils.ErrorResponse{
+			Msg: "Internal Error",
+		})
+	}
+	return c.JSON(http.StatusAccepted, echo.Map{"msg": "Ye you are now a provider"})
+}

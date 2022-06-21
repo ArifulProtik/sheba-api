@@ -4,11 +4,14 @@ package ent
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/ArifulProtik/sheba-api/ent/order"
+	"github.com/ArifulProtik/sheba-api/ent/user"
+	"github.com/google/uuid"
 )
 
 // OrderCreate is the builder for creating a Order entity.
@@ -16,6 +19,97 @@ type OrderCreate struct {
 	config
 	mutation *OrderMutation
 	hooks    []Hook
+}
+
+// SetServiceid sets the "serviceid" field.
+func (oc *OrderCreate) SetServiceid(u uuid.UUID) *OrderCreate {
+	oc.mutation.SetServiceid(u)
+	return oc
+}
+
+// SetProviderid sets the "providerid" field.
+func (oc *OrderCreate) SetProviderid(u uuid.UUID) *OrderCreate {
+	oc.mutation.SetProviderid(u)
+	return oc
+}
+
+// SetTotalcost sets the "totalcost" field.
+func (oc *OrderCreate) SetTotalcost(f float64) *OrderCreate {
+	oc.mutation.SetTotalcost(f)
+	return oc
+}
+
+// SetAddress sets the "address" field.
+func (oc *OrderCreate) SetAddress(s []string) *OrderCreate {
+	oc.mutation.SetAddress(s)
+	return oc
+}
+
+// SetIsDeclined sets the "is_declined" field.
+func (oc *OrderCreate) SetIsDeclined(b bool) *OrderCreate {
+	oc.mutation.SetIsDeclined(b)
+	return oc
+}
+
+// SetNillableIsDeclined sets the "is_declined" field if the given value is not nil.
+func (oc *OrderCreate) SetNillableIsDeclined(b *bool) *OrderCreate {
+	if b != nil {
+		oc.SetIsDeclined(*b)
+	}
+	return oc
+}
+
+// SetPaymentOk sets the "payment_ok" field.
+func (oc *OrderCreate) SetPaymentOk(b bool) *OrderCreate {
+	oc.mutation.SetPaymentOk(b)
+	return oc
+}
+
+// SetNillablePaymentOk sets the "payment_ok" field if the given value is not nil.
+func (oc *OrderCreate) SetNillablePaymentOk(b *bool) *OrderCreate {
+	if b != nil {
+		oc.SetPaymentOk(*b)
+	}
+	return oc
+}
+
+// SetIsAccepted sets the "is_accepted" field.
+func (oc *OrderCreate) SetIsAccepted(b bool) *OrderCreate {
+	oc.mutation.SetIsAccepted(b)
+	return oc
+}
+
+// SetNillableIsAccepted sets the "is_accepted" field if the given value is not nil.
+func (oc *OrderCreate) SetNillableIsAccepted(b *bool) *OrderCreate {
+	if b != nil {
+		oc.SetIsAccepted(*b)
+	}
+	return oc
+}
+
+// SetID sets the "id" field.
+func (oc *OrderCreate) SetID(u uuid.UUID) *OrderCreate {
+	oc.mutation.SetID(u)
+	return oc
+}
+
+// SetNillableID sets the "id" field if the given value is not nil.
+func (oc *OrderCreate) SetNillableID(u *uuid.UUID) *OrderCreate {
+	if u != nil {
+		oc.SetID(*u)
+	}
+	return oc
+}
+
+// SetUserID sets the "user" edge to the User entity by ID.
+func (oc *OrderCreate) SetUserID(id uuid.UUID) *OrderCreate {
+	oc.mutation.SetUserID(id)
+	return oc
+}
+
+// SetUser sets the "user" edge to the User entity.
+func (oc *OrderCreate) SetUser(u *User) *OrderCreate {
+	return oc.SetUserID(u.ID)
 }
 
 // Mutation returns the OrderMutation object of the builder.
@@ -29,6 +123,7 @@ func (oc *OrderCreate) Save(ctx context.Context) (*Order, error) {
 		err  error
 		node *Order
 	)
+	oc.defaults()
 	if len(oc.hooks) == 0 {
 		if err = oc.check(); err != nil {
 			return nil, err
@@ -86,8 +181,52 @@ func (oc *OrderCreate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (oc *OrderCreate) defaults() {
+	if _, ok := oc.mutation.IsDeclined(); !ok {
+		v := order.DefaultIsDeclined
+		oc.mutation.SetIsDeclined(v)
+	}
+	if _, ok := oc.mutation.PaymentOk(); !ok {
+		v := order.DefaultPaymentOk
+		oc.mutation.SetPaymentOk(v)
+	}
+	if _, ok := oc.mutation.IsAccepted(); !ok {
+		v := order.DefaultIsAccepted
+		oc.mutation.SetIsAccepted(v)
+	}
+	if _, ok := oc.mutation.ID(); !ok {
+		v := order.DefaultID()
+		oc.mutation.SetID(v)
+	}
+}
+
 // check runs all checks and user-defined validators on the builder.
 func (oc *OrderCreate) check() error {
+	if _, ok := oc.mutation.Serviceid(); !ok {
+		return &ValidationError{Name: "serviceid", err: errors.New(`ent: missing required field "Order.serviceid"`)}
+	}
+	if _, ok := oc.mutation.Providerid(); !ok {
+		return &ValidationError{Name: "providerid", err: errors.New(`ent: missing required field "Order.providerid"`)}
+	}
+	if _, ok := oc.mutation.Totalcost(); !ok {
+		return &ValidationError{Name: "totalcost", err: errors.New(`ent: missing required field "Order.totalcost"`)}
+	}
+	if _, ok := oc.mutation.Address(); !ok {
+		return &ValidationError{Name: "address", err: errors.New(`ent: missing required field "Order.address"`)}
+	}
+	if _, ok := oc.mutation.IsDeclined(); !ok {
+		return &ValidationError{Name: "is_declined", err: errors.New(`ent: missing required field "Order.is_declined"`)}
+	}
+	if _, ok := oc.mutation.PaymentOk(); !ok {
+		return &ValidationError{Name: "payment_ok", err: errors.New(`ent: missing required field "Order.payment_ok"`)}
+	}
+	if _, ok := oc.mutation.IsAccepted(); !ok {
+		return &ValidationError{Name: "is_accepted", err: errors.New(`ent: missing required field "Order.is_accepted"`)}
+	}
+	if _, ok := oc.mutation.UserID(); !ok {
+		return &ValidationError{Name: "user", err: errors.New(`ent: missing required edge "Order.user"`)}
+	}
 	return nil
 }
 
@@ -99,8 +238,13 @@ func (oc *OrderCreate) sqlSave(ctx context.Context) (*Order, error) {
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != nil {
+		if id, ok := _spec.ID.Value.(*uuid.UUID); ok {
+			_node.ID = *id
+		} else if err := _node.ID.Scan(_spec.ID.Value); err != nil {
+			return nil, err
+		}
+	}
 	return _node, nil
 }
 
@@ -110,11 +254,91 @@ func (oc *OrderCreate) createSpec() (*Order, *sqlgraph.CreateSpec) {
 		_spec = &sqlgraph.CreateSpec{
 			Table: order.Table,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeUUID,
 				Column: order.FieldID,
 			},
 		}
 	)
+	if id, ok := oc.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = &id
+	}
+	if value, ok := oc.mutation.Serviceid(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeUUID,
+			Value:  value,
+			Column: order.FieldServiceid,
+		})
+		_node.Serviceid = value
+	}
+	if value, ok := oc.mutation.Providerid(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeUUID,
+			Value:  value,
+			Column: order.FieldProviderid,
+		})
+		_node.Providerid = value
+	}
+	if value, ok := oc.mutation.Totalcost(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeFloat64,
+			Value:  value,
+			Column: order.FieldTotalcost,
+		})
+		_node.Totalcost = value
+	}
+	if value, ok := oc.mutation.Address(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeJSON,
+			Value:  value,
+			Column: order.FieldAddress,
+		})
+		_node.Address = value
+	}
+	if value, ok := oc.mutation.IsDeclined(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeBool,
+			Value:  value,
+			Column: order.FieldIsDeclined,
+		})
+		_node.IsDeclined = value
+	}
+	if value, ok := oc.mutation.PaymentOk(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeBool,
+			Value:  value,
+			Column: order.FieldPaymentOk,
+		})
+		_node.PaymentOk = value
+	}
+	if value, ok := oc.mutation.IsAccepted(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeBool,
+			Value:  value,
+			Column: order.FieldIsAccepted,
+		})
+		_node.IsAccepted = value
+	}
+	if nodes := oc.mutation.UserIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   order.UserTable,
+			Columns: []string{order.UserColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUUID,
+					Column: user.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.user_order = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
 	return _node, _spec
 }
 
@@ -132,6 +356,7 @@ func (ocb *OrderCreateBulk) Save(ctx context.Context) ([]*Order, error) {
 	for i := range ocb.builders {
 		func(i int, root context.Context) {
 			builder := ocb.builders[i]
+			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*OrderMutation)
 				if !ok {
@@ -159,10 +384,6 @@ func (ocb *OrderCreateBulk) Save(ctx context.Context) ([]*Order, error) {
 				}
 				mutation.id = &nodes[i].ID
 				mutation.done = true
-				if specs[i].ID.Value != nil {
-					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
-				}
 				return nodes[i], nil
 			})
 			for i := len(builder.hooks) - 1; i >= 0; i-- {
