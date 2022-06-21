@@ -4,7 +4,9 @@
 
 ### User
 
-[POST] Signup `http://localhost:3001/api/v1/signup`
+---
+
+> [POST] Signup `http://localhost:3001/api/v1/signup`
 
 ```json
 {
@@ -16,7 +18,7 @@
 }
 ```
 
-[POST] SignIn `http://localhost:3001/api/v1/signin`
+> [POST] SignIn `http://localhost:3001/api/v1/signin`
 
 ```json
 {
@@ -25,19 +27,21 @@
 }
 ```
 
-[GET] Refresh `http://localhost:3001/api/v1/refresh`
+> [GET] Refresh `http://localhost:3001/api/v1/refresh`
 
 Header: token:refreshtoken
 
-[PUT] Update User to ServiceProvider `http://localhost:3001/api/v1/user`
+> [PUT] Update User to ServiceProvider `http://localhost:3001/api/v1/user`
 
-Authentication Required ##### Bearer Token: `access token`
+Authentication Required _Bearer Token:_ `access token`
 
 ### location and category {Mock}
 
-[POST] CREATE location `http://localhost:3001/api/v1/location/create`
+---
 
-Authentication Required ##### Bearer Token: `access token`
+> [POST] CREATE location `http://localhost:3001/api/v1/location/create`
+
+Authentication Required _Bearer Token:_ `access token`
 
 ```json
 {
@@ -45,9 +49,9 @@ Authentication Required ##### Bearer Token: `access token`
 }
 ```
 
-[POST] CREATE category `http://localhost:3001/api/v1/category/create`
+> [POST] CREATE category `http://localhost:3001/api/v1/category/create`
 
-Authentication Required ##### Bearer Token: `access token`
+Authentication Required _Bearer Token:_ `access token`
 
 ```json
 {
@@ -57,9 +61,11 @@ Authentication Required ##### Bearer Token: `access token`
 
 ### Services
 
-[POST] New Service `http://localhost:3001/api/v1/service/create`
+---
 
-Authentication Required ##### Bearer Token: `access token`
+> [POST] New Service `http://localhost:3001/api/v1/service/create`
+
+Authentication Required _Bearer Token:_ `access token`
 
 ```json
 {
@@ -74,17 +80,19 @@ Authentication Required ##### Bearer Token: `access token`
 
 instruments and additionalcost are optional
 
-[GET] ALL available services `http://localhost:3001/api/v1/services`
+> [GET] ALL available services `http://localhost:3001/api/v1/services`
 
-[GET] MyServices `http://localhost:3001/api/v1/myservices`
+> [GET] MyServices `http://localhost:3001/api/v1/myservices`
 
-Authentication Required ##### Bearer Token: `access token`
+Authentication Required _Bearer Token_ `access token`
 
 ### Orders
 
-[POST] Place Order `http://localhost:3001/api/v1/order/create`
+---
 
-Authentication Required ##### Bearer Token: `access token`
+> [POST] Place Order `http://localhost:3001/api/v1/order/create`
+
+Authentication Required _Bearer Token:_: `access token`
 
 ```json
 {
@@ -93,13 +101,14 @@ Authentication Required ##### Bearer Token: `access token`
 }
 ```
 
-[GET] OrderHistory `http://localhost:3001/api/v1/orderhistory`
+> [GET] OrderHistory `http://localhost:3001/api/v1/orderhistory`
 
-Authentication Required ##### Bearer Token: `access token`
-[PUT] OrderRequets `http://localhost:3001/api/v1/myorders`
+Authentication Required _Bearer Token:_: `access token`
 
-Authentication Required ##### Bearer Token: `access token`
+> [PUT] OrderRequets `http://localhost:3001/api/v1/myorders`
 
-[PUT] Decline Request `http://localhost:3001/api/v1/order/:orderID/decline`
+Authentication Required _Bearer Token:_ `access token`
 
-Authentication Required ##### Bearer Token: `access token`
+> [PUT] Decline Request `http://localhost:3001/api/v1/order/:orderID/decline`
+
+Authentication Required _Bearer Token:_: `access token`
